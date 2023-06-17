@@ -2,6 +2,7 @@ package com.luizreis.acaddrive.controllers;
 
 import com.luizreis.acaddrive.dto.user.UserRequestDTO;
 import com.luizreis.acaddrive.dto.user.UserResponseDTO;
+import com.luizreis.acaddrive.dto.user.UserUpdateDTO;
 import com.luizreis.acaddrive.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,12 @@ public class UserController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(responseDTO);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id, @Valid @RequestBody UserUpdateDTO dto){
+        UserResponseDTO result = service.update(id, dto);
+        return ResponseEntity.ok().body(result);
     }
 
     @DeleteMapping(value = "/{id}")

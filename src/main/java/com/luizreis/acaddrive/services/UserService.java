@@ -2,10 +2,12 @@ package com.luizreis.acaddrive.services;
 
 import com.luizreis.acaddrive.dto.user.UserRequestDTO;
 import com.luizreis.acaddrive.dto.user.UserResponseDTO;
+import com.luizreis.acaddrive.dto.user.UserUpdateDTO;
 import com.luizreis.acaddrive.entities.User;
 import com.luizreis.acaddrive.repositories.UserRepository;
 import com.luizreis.acaddrive.services.exceptions.DbViolationException;
 import com.luizreis.acaddrive.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -67,5 +69,18 @@ public class UserService {
         }catch(DataIntegrityViolationException e){
             throw new DbViolationException("Integrity violation error");
         }
+    }
+
+    @Transactional
+    public UserResponseDTO update(UUID id, UserUpdateDTO dto) {
+        if(!repository.existsById(id)){
+            throw new ResourceNotFoundException("User not found!");
+        }
+        User user = repository.getReferenceById(id);
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+        user = repository.save(user);
+        return new UserResponseDTO(user);
+
     }
 }
