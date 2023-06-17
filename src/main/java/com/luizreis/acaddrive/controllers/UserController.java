@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -27,6 +28,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<UserResponseDTO>> findAll(Pageable pageable){
         return ResponseEntity.ok(service.findAll(pageable));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> findById(@PathVariable UUID id){
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping

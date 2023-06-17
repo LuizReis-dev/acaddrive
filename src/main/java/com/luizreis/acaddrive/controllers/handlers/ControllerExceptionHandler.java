@@ -3,6 +3,7 @@ package com.luizreis.acaddrive.controllers.handlers;
 import com.luizreis.acaddrive.dto.error.CustomError;
 import com.luizreis.acaddrive.dto.error.ValidationError;
 import com.luizreis.acaddrive.services.exceptions.DbViolationException;
+import com.luizreis.acaddrive.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,15 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(DbViolationException.class)
     public ResponseEntity<CustomError> dbViolation(DbViolationException e, HttpServletRequest request){
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        CustomError error = new CustomError(Instant.now(),status.value(), "This email is already in use",request.getRequestURI());
+        CustomError error = new CustomError(Instant.now(),status.value(), e.getMessage(),request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<CustomError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        CustomError error = new CustomError(Instant.now(),status.value(), e.getMessage(),request.getRequestURI());
 
         return ResponseEntity.status(status).body(error);
     }

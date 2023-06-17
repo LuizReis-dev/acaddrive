@@ -5,6 +5,7 @@ import com.luizreis.acaddrive.dto.user.UserResponseDTO;
 import com.luizreis.acaddrive.entities.User;
 import com.luizreis.acaddrive.repositories.UserRepository;
 import com.luizreis.acaddrive.services.exceptions.DbViolationException;
+import com.luizreis.acaddrive.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -12,8 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -44,5 +47,12 @@ public class UserService {
     public Page<UserResponseDTO> findAll(Pageable pageable) {
         Page<User> users = repository.findAll(pageable);
         return users.map(user -> new UserResponseDTO(user));
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponseDTO findById(UUID id) {
+        User user = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return new UserResponseDTO(user);
     }
 }
