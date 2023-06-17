@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -54,5 +55,17 @@ public class UserService {
         User user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return new UserResponseDTO(user);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(UUID id){
+        if(!repository.existsById(id)){
+            throw new ResourceNotFoundException("User not found!");
+        }
+        try {
+            repository.deleteById(id);
+        }catch(DataIntegrityViolationException e){
+            throw new DbViolationException("Integrity violation error");
+        }
     }
 }
