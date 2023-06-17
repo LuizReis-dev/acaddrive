@@ -3,6 +3,7 @@ package com.luizreis.acaddrive.controllers;
 import com.luizreis.acaddrive.dto.user.UserRequestDTO;
 import com.luizreis.acaddrive.dto.user.UserResponseDTO;
 import com.luizreis.acaddrive.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponseDTO insert(@RequestBody UserRequestDTO dto){
+    public UserResponseDTO insert(@Valid @RequestBody UserRequestDTO dto){
         return service.insert(dto);
     }
 }

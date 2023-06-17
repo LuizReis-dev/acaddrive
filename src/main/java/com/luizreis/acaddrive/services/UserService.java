@@ -4,7 +4,9 @@ import com.luizreis.acaddrive.dto.user.UserRequestDTO;
 import com.luizreis.acaddrive.dto.user.UserResponseDTO;
 import com.luizreis.acaddrive.entities.User;
 import com.luizreis.acaddrive.repositories.UserRepository;
+import com.luizreis.acaddrive.services.exceptions.DbViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +23,14 @@ public class UserService {
     }
 
     public UserResponseDTO insert(UserRequestDTO dto){
-        User user = new User();
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        return new UserResponseDTO(repository.save(user));
+        try {
+            User user = new User();
+            user.setName(dto.getName());
+            user.setEmail(dto.getEmail());
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            return new UserResponseDTO(repository.save(user));
+        }catch (DataIntegrityViolationException e){
+            throw new DbViolationException("This email is already in use");
+        }
     }
 }
