@@ -4,6 +4,7 @@ import com.luizreis.acaddrive.dto.auth.AuthenticationRequestDTO;
 import com.luizreis.acaddrive.dto.auth.AuthenticationResponseDTO;
 import com.luizreis.acaddrive.dto.auth.RegisterRequestDTO;
 import com.luizreis.acaddrive.services.AuthenticationService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponseDTO> register(@RequestBody RegisterRequestDTO request){
+    public ResponseEntity<AuthenticationResponseDTO> register(@Valid @RequestBody RegisterRequestDTO request){
         return ResponseEntity.ok(service.register(request));
     }
 
