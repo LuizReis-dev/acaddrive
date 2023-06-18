@@ -1,0 +1,3 @@
+INSERT INTO tb_user(id, email, name, password,role) VALUES ('03dc73b9-c0fa-41cb-b229-bdbb1f57e9d6', 'luiz@gmail.com', 'luiz', '$2a$10$d2NuXer2Mwy45mksnBZZxOm6d9IVhMvAFQZN4yhEjC4esJm5NG4mG','USER');
+INSERT INTO tb_user(id, email, name, password,role) VALUES ('48e4bf48-5481-4c85-8ff7-00259a3c194e', 'fernando@gmail.com', 'fernando', '$2a$10$hNYAY8WeQ0QW9a5ePleuquh.4yncM7Dm2VLvgOUM9rawlTufz2dRq','USER');
+INSERT INTO tb_user(id, email, name, password,role) VALUES ('6f514abb-f058-4dcf-a0fe-fe6e45255c4c', 'admin@gmail.com', 'admin', '$2a$10$cHZrsmqoAP.dQtuoKHCiSuG9PY10IKdiHkwqTrzF8QFSYfH1AAAlS','ADMIN');

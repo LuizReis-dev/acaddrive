@@ -36,7 +36,6 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable UUID id){
         return ResponseEntity.ok(service.findById(id));
     }
@@ -55,7 +54,6 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id, @Valid @RequestBody UserUpdateDTO dto){
         UserResponseDTO result = service.update(id, dto);
         return ResponseEntity.ok().body(result);
