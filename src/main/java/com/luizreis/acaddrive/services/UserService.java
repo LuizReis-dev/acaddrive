@@ -6,23 +6,23 @@ import com.luizreis.acaddrive.dto.user.UserUpdateDTO;
 import com.luizreis.acaddrive.entities.User;
 import com.luizreis.acaddrive.repositories.UserRepository;
 import com.luizreis.acaddrive.services.exceptions.DbViolationException;
+import com.luizreis.acaddrive.services.exceptions.ForbiddenException;
 import com.luizreis.acaddrive.services.exceptions.ResourceNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
+import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class UserService {
@@ -56,6 +56,9 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponseDTO findById(UUID id) {
+        if(!isUserOrAdmin(id)){
+            throw new ForbiddenException("Not authorized");
+        }
         User user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return new UserResponseDTO(user);
@@ -78,11 +81,26 @@ public class UserService {
         if(!repository.existsById(id)){
             throw new ResourceNotFoundException("User not found!");
         }
+        if(!isUserOrAdmin(id)){
+            throw new ForbiddenException("Not authorized");
+        }
         User user = repository.getReferenceById(id);
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user = repository.save(user);
         return new UserResponseDTO(user);
+    }
+
+    public boolean isUserOrAdmin(UUID id){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        User user = repository.findByEmail(userName)
+                .orElseThrow(()-> new ResourceNotFoundException("User not found"));
+        String role = user.getRole().toString();
+        if(role.equals("ADMIN") || id.equals(user.getId())) return true;
+
+        return false;
 
     }
 }
