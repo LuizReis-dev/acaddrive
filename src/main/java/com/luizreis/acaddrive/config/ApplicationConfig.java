@@ -1,6 +1,7 @@
 package com.luizreis.acaddrive.config;
 
 import com.luizreis.acaddrive.repositories.UserRepository;
+import com.luizreis.acaddrive.services.exceptions.ResourceNotFoundException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +25,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> repository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Bean

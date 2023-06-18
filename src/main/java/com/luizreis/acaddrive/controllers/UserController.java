@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -17,26 +18,31 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/users")
+
 public class UserController {
 
     private final UserService service;
 
     @Autowired
+
     public UserController(UserService service) {
         this.service = service;
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Page<UserResponseDTO>> findAll(Pageable pageable){
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable UUID id){
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponseDTO> insert(@Valid @RequestBody UserRequestDTO dto){
         UserResponseDTO responseDTO = service.insert(dto);
         URI uri = ServletUriComponentsBuilder
@@ -49,12 +55,14 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id, @Valid @RequestBody UserUpdateDTO dto){
         UserResponseDTO result = service.update(id, dto);
         return ResponseEntity.ok().body(result);
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id){
         service.delete(id);
         return ResponseEntity.noContent().build();
