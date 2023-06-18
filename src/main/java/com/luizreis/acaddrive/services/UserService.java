@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UserService implements UserDetailsService {
-
+public class UserService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
@@ -86,11 +85,4 @@ public class UserService implements UserDetailsService {
         return new UserResponseDTO(user);
 
     }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findByEmail(username)
-                .orElseThrow(() ->new UsernameNotFoundException("User not found"));
-    }
-
 }
