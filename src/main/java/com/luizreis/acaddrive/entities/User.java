@@ -26,6 +26,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "id.user")
     private Set<UserFolder> folders = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<File> files = new ArrayList<>();
     public User() {
     }
 
@@ -70,6 +72,10 @@ public class User implements UserDetails {
 
     public Set<UserFolder> getFolders() {
         return folders;
+    }
+
+    public List<File> getFiles() {
+        return files;
     }
 
     @Override

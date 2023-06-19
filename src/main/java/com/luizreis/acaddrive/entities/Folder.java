@@ -4,9 +4,7 @@ package com.luizreis.acaddrive.entities;
 import jakarta.persistence.*;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name="tb_folder")
@@ -16,18 +14,21 @@ public class Folder {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
-    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-    private Instant created_at;
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE", name = "created_at")
+    private Instant createdAt;
     @OneToMany(mappedBy = "id.folder")
     private Set<UserFolder> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "folder")
+    private List<File> files = new ArrayList<>();
 
     public Folder() {
     }
 
-    public Folder(UUID id, String name, Instant created_at) {
+    public Folder(UUID id, String name, Instant createdAt) {
         this.id = id;
         this.name = name;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
     }
 
     public UUID getId() {
@@ -46,16 +47,20 @@ public class Folder {
         this.name = name;
     }
 
-    public Instant getCreated_at() {
-        return created_at;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Instant created_at) {
-        this.created_at = created_at;
+    public void setCreated_at(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Set<UserFolder> getUsers() {
         return users;
+    }
+
+    public List<File> getFiles() {
+        return files;
     }
 }
 
