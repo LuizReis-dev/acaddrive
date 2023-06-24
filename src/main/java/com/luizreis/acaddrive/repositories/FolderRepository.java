@@ -1,7 +1,15 @@
 package com.luizreis.acaddrive.repositories;
 
+import com.luizreis.acaddrive.dto.folder.FolderIdDTO;
 import com.luizreis.acaddrive.entities.Folder;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface FolderRepository extends JpaRepository<Folder, Long> {
+import java.util.List;
+import java.util.UUID;
+
+public interface FolderRepository extends JpaRepository<Folder, UUID> {
+
+    @Query("SELECT new com.luizreis.acaddrive.dto.folder.FolderIdDTO(obj.id.folder.id) FROM UserFolder obj WHERE obj.id.user.id =:userId")
+    List<FolderIdDTO> findFoldersByUser(UUID userId);
 }
