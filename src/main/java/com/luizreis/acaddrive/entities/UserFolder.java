@@ -41,4 +41,8 @@ public class UserFolder {
     public boolean isCreator() {
         return creator;
     }
+
+    public void setCreator(boolean creator) {
+        this.creator = creator;
+    }
 }

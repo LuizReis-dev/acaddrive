@@ -103,4 +103,12 @@ public class UserService {
         return false;
 
     }
+
+    public User getAuthenticatedUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        User user = repository.findByEmail(userName)
+                .orElseThrow(()-> new ResourceNotFoundException("User not found"));
+        return user;
+    }
 }

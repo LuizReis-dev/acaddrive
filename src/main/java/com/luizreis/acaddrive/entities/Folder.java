@@ -16,7 +16,7 @@ public class Folder {
     private String name;
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE", name = "created_at")
     private Instant createdAt;
-    @OneToMany(mappedBy = "id.folder")
+    @OneToMany(mappedBy = "id.folder", cascade = {CascadeType.ALL})
     private Set<UserFolder> users = new HashSet<>();
 
     @OneToMany(mappedBy = "folder")
@@ -59,8 +59,14 @@ public class Folder {
         return users;
     }
 
+    public void setUsers(Set<UserFolder> users) {
+        this.users = users;
+    }
+
     public List<File> getFiles() {
         return files;
     }
+
+
 }
 
