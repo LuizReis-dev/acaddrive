@@ -3,6 +3,7 @@ package com.luizreis.acaddrive.services;
 import com.luizreis.acaddrive.dto.folder.FolderDTO;
 import com.luizreis.acaddrive.dto.folder.FolderIdDTO;
 import com.luizreis.acaddrive.dto.folder.FolderMinDTO;
+import com.luizreis.acaddrive.dto.user.UserResponseDTO;
 import com.luizreis.acaddrive.entities.Folder;
 import com.luizreis.acaddrive.entities.User;
 import com.luizreis.acaddrive.entities.UserFolder;
@@ -47,9 +48,9 @@ public class FolderService {
     }
 
     public boolean verifyPermissionInFolder(UUID userId, UUID folderId) {
-        List<FolderIdDTO> folders = repository.findFoldersByUser(userId);
+        List<FolderMinDTO> folders = repository.findFoldersByUser(userId);
         boolean belongs = false;
-        for (FolderIdDTO folder : folders) {
+        for (FolderMinDTO folder : folders) {
             if (folder.getId().equals(folderId)) {
                 belongs = true;
             }
@@ -63,5 +64,11 @@ public class FolderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Folder not Found!"));
 
         return new FolderMinDTO(folder.getName(),folder.getId());
+    }
+
+    @Transactional
+    public List<FolderMinDTO> getFoldersByUser(UUID userId){
+        List<FolderMinDTO> folders = repository.findFoldersByUser(userId);
+        return folders;
     }
 }
