@@ -8,9 +8,11 @@ import com.luizreis.acaddrive.services.exceptions.ForbiddenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.ResponseBytes;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.File;
 
@@ -47,7 +49,7 @@ public class S3Service {
 
         String fileName = System.currentTimeMillis()+"_"+file.getOriginalFilename();
         File uploadFile = convertMultipartFileToFile(file);
-        String path = folder.getName()+"/"+fileName;
+        String path = folder.getId().toString()+"/"+fileName;
 
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
@@ -60,6 +62,24 @@ public class S3Service {
         FileDTO fileDTO = new FileDTO(Instant.now(), fileName, path, size, folder.getId(), user.getId());
         fileDTO = fileService.insert(fileDTO);
         return fileDTO;
+    }
+
+    public byte[] downloadFile(UUID folder,String fileName){
+        if(!folderService.verifyPermissionInFolder(userService.getAuthenticatedUser().getId(), folder)){
+            throw  new ForbiddenException("Not authorized");
+        }
+        try {
+            GetObjectRequest objectRequest = GetObjectRequest
+                    .builder()
+                    .key(folder +"/"+ fileName)
+                    .bucket(bucketName)
+                    .build();
+
+            ResponseBytes<GetObjectResponse> objectBytes = s3.getObjectAsBytes(objectRequest);
+            return objectBytes.asByteArray();
+        } catch (S3Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     private File convertMultipartFileToFile(MultipartFile file){
