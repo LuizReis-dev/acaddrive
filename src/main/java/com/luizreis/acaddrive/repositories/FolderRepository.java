@@ -11,6 +11,8 @@ import java.util.UUID;
 
 public interface FolderRepository extends JpaRepository<Folder, UUID> {
 
-    @Query("SELECT new com.luizreis.acaddrive.dto.folder.FolderMinDTO(obj.id.folder.name,obj.id.folder.id) FROM UserFolder obj WHERE obj.id.user.id =:userId")
+    @Query("SELECT new com.luizreis.acaddrive.dto.folder.FolderMinDTO(obj.id.folder.name,obj.id.folder.id) " +
+            "FROM UserFolder obj " +
+            "WHERE obj.id.user.id =:userId")
     List<FolderMinDTO> findFoldersByUser(UUID userId);
 }
