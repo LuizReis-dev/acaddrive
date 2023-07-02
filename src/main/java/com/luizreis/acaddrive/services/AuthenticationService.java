@@ -37,7 +37,7 @@ public class AuthenticationService {
         repository.save(user);
 
         var jwtToken = jwtService.generateToken(user);
-        return new AuthenticationResponseDTO(jwtToken);
+        return new AuthenticationResponseDTO(jwtToken, user.getId());
     }
 
     public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO request) {
@@ -50,6 +50,6 @@ public class AuthenticationService {
         User user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
         var jwtToken = jwtService.generateToken(user);
-        return new AuthenticationResponseDTO(jwtToken);
+        return new AuthenticationResponseDTO(jwtToken, user.getId());
     }
 }
